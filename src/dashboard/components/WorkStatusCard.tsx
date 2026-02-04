@@ -1,21 +1,35 @@
-import { useSelector, useDispatch } from "react-redux";
-import { DashboardRootState, DashboardDispatch } from "../store";
-import { updateWorkStatus } from "../store/userSlice";
+import { useSelector } from "react-redux";
+import { DashboardRootState } from "../store";
 import { WorkStatus } from "../../shared/types";
+import { WorkStatusItem } from "./WorkStatusItem";
+import { useEffect, useRef } from "react";
 
 export const WorkStatusCard = ({ className = "" }: { className?: string }) => {
   const { profile } = useSelector((state: DashboardRootState) => state.user);
-  const dispatch = useDispatch<DashboardDispatch>();
-
-  const statusLabels: Record<WorkStatus, string> = {
+  const saveMessageCard = useRef<HTMLDivElement>(null);
+  const statuses: Record<WorkStatus, string> = {
     looking: "Currently looking for work",
     passive: "Passively looking for work",
     not_looking: "Don't want to hear about work",
   };
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(updateWorkStatus(e.target.value as WorkStatus));
-  };
+  // Show save message when work status changes
+  useEffect(() => {
+    let saveMessageTimeout: any;
+    if (profile.workStatus) {
+      if (saveMessageCard.current) {
+        saveMessageCard.current.style.opacity = "100";
+      }
+      saveMessageTimeout = setTimeout(() => {
+         if (saveMessageCard.current) {
+           saveMessageCard.current.style.opacity = "0";
+         }
+      }, 1000);
+    }
+    return () => {
+      if (saveMessageTimeout) clearTimeout(saveMessageTimeout);
+    };
+  }, [profile.workStatus]);
 
   return (
     <div className={`bg-white rounded-lg shadow-sm p-6 h-full ${className}`}>
@@ -23,20 +37,18 @@ export const WorkStatusCard = ({ className = "" }: { className?: string }) => {
         Your Work Status
       </h3>
       <div className="py-2">
-        <p>Update your availability for new opportunities:</p>
-        <select
-          value={profile.workStatus}
-          onChange={handleStatusChange}
-          className="w-full p-3 border border-gray-200 rounded-md my-4 text-base"
-        >
-          <option value="looking">Currently looking for work</option>
-          <option value="passive">Passively looking for work</option>
-          <option value="not_looking">Don't want to hear about work</option>
-        </select>
-        <p className="mt-4 text-gray-500">
-          Your current status:{" "}
-          <strong>{statusLabels[profile.workStatus]}</strong>
-        </p>
+        <p>What's your current availability for new opportunities?</p>
+        <div className="flex flex-col gap-2 mt-4">
+        {Object.entries(statuses).map(([key, label]) => (
+          <WorkStatusItem
+            key={`dashboardWorkStatus-${key}`}
+            value={key as WorkStatus}
+            label={label}
+            currentStatus={profile.workStatus}
+          />
+        ))}
+        </div>
+        <div ref={saveMessageCard} className="bg-green-200 mt-2 p-3 rounded-lg transition-opacity duration-500" style={{ opacity: 0 }}>Work status updated</div>
       </div>
     </div>
   );
