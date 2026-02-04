@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-import { StoreClients } from "../../shared/broadcastSync";
+import { StoreClients } from "../../shared/eventSync";
 import { createSyncMiddleware, initializeSyncListener } from "../../shared/syncMiddleware";
 
 export const navStore = configureStore({

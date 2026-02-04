@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
 import { createSyncMiddleware, initializeSyncListener } from "../../shared/syncMiddleware";
-import { StoreClients } from "../../shared/broadcastSync";
+import { StoreClients } from "../../shared/eventSync";
 
 export const dashboardStore = configureStore({
   reducer: {

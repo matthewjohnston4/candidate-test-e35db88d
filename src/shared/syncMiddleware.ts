@@ -3,7 +3,7 @@ import {
   syncWorkStatusAction,
   subscribeToActions,
   StoreClients,
-} from "./broadcastSync";
+} from "./eventSync";
 import { updateWorkStatus as updateDashboardWorkStatus } from "../dashboard/store/userSlice";
 import { updateWorkStatus as updateNavWorkStatus } from "../navigation/store/userSlice";
 
