@@ -1,4 +1,4 @@
-import { Middleware, Dispatch } from "@reduxjs/toolkit";
+import { Middleware } from "@reduxjs/toolkit";
 import {
   syncWorkStatusAction,
   subscribeToActions,
